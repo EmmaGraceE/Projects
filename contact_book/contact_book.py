@@ -2,16 +2,15 @@
 GUI created using PyQt and the SQL database managed by sqlite."""
 
 import sys
-from PyQt5.QtWidgets import QAction, QApplication, QDialog, QLineEdit, QShortcut, QVBoxLayout, QWidget, QToolBar
+from PyQt5.QtWidgets import QAction, QApplication, QDialog, QLineEdit, QVBoxLayout, QWidget, QToolBar
 from PyQt5.QtWidgets import QMainWindow
-from PyQt5.QtWidgets import QGridLayout
-from PyQt5.QtWidgets import QPushButton
-from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QKeySequence
+
 from PyQt5.QtWidgets import QFormLayout
 import logging
 
 logging.basicConfig(level=logging.INFO)
+
+
 class contact_book_view(QMainWindow):
     """Creates the view used for the contact book."""
     def __init__(self, parent = None):
@@ -20,7 +19,12 @@ class contact_book_view(QMainWindow):
         self.general_layout = QVBoxLayout()
         self.central_widget = QWidget(self)
         self.setCentralWidget(self.central_widget)
+        # self.create_general_ui()
         self.create_menu()
+
+    def create_general_ui():
+        pass
+
 
     def create_menu(self):
         """Creates the menu that goes at the top"""
