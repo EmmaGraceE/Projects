@@ -17,11 +17,10 @@ class ContactModel():
         model.setTable('contacts')
         model.setEditStrategy(QSqlTableModel.OnFieldChange)
         model.select() # Populate model with data from SetTable table.
-        headers = ["ID", "Gender", "Title", "First Name", "Last Name", "Email", "Phone Number"]
-        for count, header in enumerate(headers):
+        self.headers = ["ID", "Gender", "Title", "First Name", "Last Name", "Email", "Phone Number"]
+        for count, header in enumerate(self.headers):
             model.setHeaderData(count, Qt.Horizontal, header)
         return model
-
 
 
 def create_table():

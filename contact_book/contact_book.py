@@ -2,7 +2,7 @@
 GUI created using PyQt and the SQL database managed by sqlite."""
 
 import sys
-from PyQt5.QtWidgets import QAbstractItemView, QAction, QApplication, QDialog, QLabel, QLineEdit, QTableView, QVBoxLayout, QWidget, QToolBar
+from PyQt5.QtWidgets import QAbstractItemView, QAction, QApplication, QDialog, QHBoxLayout, QLabel, QLineEdit, QTableView, QVBoxLayout, QWidget, QToolBar
 from PyQt5.QtWidgets import QMainWindow
 from PyQt5.QtWidgets import QTableWidget, QComboBox
 from PyQt5.QtWidgets import QFormLayout, QGridLayout
@@ -25,6 +25,14 @@ class contact_book_view(QMainWindow):
         self.create_menu()
 
     def create_general_ui(self):
+        search_layout = QHBoxLayout()
+        self.searchbar = QLineEdit()
+        self.search_combobox = QComboBox()
+        self.search_combobox.addItems(self.model.headers)
+        search_layout.addWidget(QLabel("Search: "))
+        search_layout.addWidget(self.search_combobox)
+        search_layout.addWidget(self.searchbar)
+        self.layout.addLayout(search_layout)
         self.table = QTableView()
         self.table.setModel(self.model.model)
         print(self.model.model.rowCount())
