@@ -2,17 +2,19 @@
 GUI created using PyQt and the SQL database managed by sqlite."""
 
 import sys
-from PyQt5.QtWidgets import QAction, QApplication, QShortcut, QVBoxLayout, QWidget, QToolBar
+from PyQt5.QtWidgets import QAction, QApplication, QDialog, QLineEdit, QShortcut, QVBoxLayout, QWidget, QToolBar
 from PyQt5.QtWidgets import QMainWindow
 from PyQt5.QtWidgets import QGridLayout
 from PyQt5.QtWidgets import QPushButton
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QKeySequence
+from PyQt5.QtWidgets import QFormLayout
+import logging
 
-
+logging.basicConfig(level=logging.INFO)
 class contact_book_view(QMainWindow):
     """Creates the view used for the contact book."""
-    def __init__(self):
+    def __init__(self, parent = None):
         super().__init__() 
         self.setWindowTitle("Contact Book")
         self.general_layout = QVBoxLayout()
@@ -31,11 +33,30 @@ class contact_book_view(QMainWindow):
         file_menu.addAction(exit_action)
 
         insert_action = self.menuBar().addAction("&Insert")
-        insert_action.triggered.connect(self.insert_form)
+        insert_action.triggered.connect(self.open_insert_form)
     
-    def insert_form(self):
+    def open_insert_form(self):
         """Creates the submenu form used for adding a new record."""
-        print("print")
+        insert_form = create_insert_form(self)
+        
+
+class create_insert_form(QDialog):
+    def __init__(self, parent=None):
+        super().__init__(parent = parent)
+        self.setWindowTitle("Insert Form")
+        self.layout = QVBoxLayout()
+        self.setLayout(self.layout)
+        self.setup_form()
+        self.show()
+        logging.info("New insert form created")
+
+    def setup_form(self):
+        form_layout = QFormLayout()
+        form_layout.addRow("First Name:", QLineEdit())
+        form_layout.addRow("Last Name:", QLineEdit())
+        form_layout.addRow("Email:", QLineEdit())
+        
+        self.layout.addLayout(form_layout)
 
 
 
