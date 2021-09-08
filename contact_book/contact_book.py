@@ -40,10 +40,17 @@ class contact_book_view(QMainWindow):
         exit_action.setShortcut("CTRL+E")
         file_menu.addAction(exit_action)
 
-        insert_action = self.menuBar().addAction("&Insert")
+        insert_action = self.menuBar().addAction('&Insert')
         insert_action.triggered.connect(self.open_insert_form)
 
-        
+        delete_action = self.menuBar().addAction('&Delete')
+        delete_action.triggered.connect(self.delete_record)
+
+
+    def delete_record(self):
+        pass
+        logging.info("delete action clicked.")
+
     
     def open_insert_form(self):
         """Creates the submenu form used for adding a new record."""
