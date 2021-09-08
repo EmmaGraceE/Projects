@@ -2,31 +2,38 @@
 GUI created using PyQt and the SQL database managed by sqlite."""
 
 import sys
-from PyQt5.QtWidgets import QAction, QApplication, QDialog, QLabel, QLineEdit, QVBoxLayout, QWidget, QToolBar
+from PyQt5.QtWidgets import QAbstractItemView, QAction, QApplication, QDialog, QLabel, QLineEdit, QTableView, QVBoxLayout, QWidget, QToolBar
 from PyQt5.QtWidgets import QMainWindow
 from PyQt5.QtWidgets import QTableWidget, QComboBox
 from PyQt5.QtWidgets import QFormLayout, QGridLayout
 import logging
 from PyQt5.QtWidgets import QCheckBox
+from contact_book_model import ContactModel, create_connection
 
 logging.basicConfig(level=logging.INFO)
 
 
 class contact_book_view(QMainWindow):
-    """Creates the view used for the contact book."""
+    """The parent window for the contact book."""
     def __init__(self, parent = None):
         super().__init__() 
         self.setWindowTitle("Contact Book")
-        self.general_layout = QGridLayout()
+        self.model = ContactModel()
+        self.setFixedSize(700, 400)
+        self.layout = QVBoxLayout()
         self.create_general_ui()
         self.create_menu()
 
     def create_general_ui(self):
-        self.table = QTableWidget()
-        self.general_layout.addWidget(self.table, 1, 0)
-        central_widget = QWidget()
-        central_widget.setLayout(self.general_layout)
-        self.setCentralWidget(central_widget)
+        self.table = QTableView()
+        self.table.setModel(self.model.model)
+        print(self.model.model.rowCount())
+        self.table.setSelectionBehavior(QAbstractItemView.SelectRows)
+        self.table.resizeColumnsToContents()
+        self.layout.addWidget(self.table)
+        container_widget = QWidget()
+        container_widget.setLayout(self.layout)
+        self.setCentralWidget(container_widget)
 
 
 
@@ -53,11 +60,13 @@ class contact_book_view(QMainWindow):
 
     
     def open_insert_form(self):
-        """Creates the submenu form used for adding a new record."""
+        """Creates the su    # pyqt always returns false for sqlite execs that use
+    # multiple statements.bmenu form used for adding a new record."""
         insert_form = create_insert_form(self)
         
 
 class create_insert_form(QDialog):
+    """Insert form for the contact book."""
     def __init__(self, parent=None):
         super().__init__(parent = parent)
         self.setWindowTitle("Insert Form")
@@ -81,15 +90,20 @@ class create_insert_form(QDialog):
         form_layout.addRow("First Name:", QLineEdit())
         form_layout.addRow("Last Name:", QLineEdit())
         form_layout.addRow("Email:", QLineEdit())
+        form_layout.addRow("Phone Number:", QLineEdit())
         
         self.layout.addLayout(form_layout)
 
-def main():
-    contact_book_app = QApplication(sys.argv)
-    view = contact_book_view()
-    view.show()
 
-    sys.exit(contact_book_app.exec())
+def main():
+    app = QApplication(sys.argv)
+    if not create_connection("contacts.sqlite"):
+        sys.exit(1)
+    win = contact_book_view()
+    win.show()
+
+
+    sys.exit(app.exec())
 
 if __name__ == '__main__':
     main()
