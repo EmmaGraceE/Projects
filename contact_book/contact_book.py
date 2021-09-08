@@ -2,9 +2,9 @@
 GUI created using PyQt and the SQL database managed by sqlite."""
 
 import sys
-from PyQt5.QtWidgets import QAction, QApplication, QDialog, QLineEdit, QVBoxLayout, QWidget, QToolBar
+from PyQt5.QtWidgets import QAction, QApplication, QDialog, QLabel, QLineEdit, QVBoxLayout, QWidget, QToolBar
 from PyQt5.QtWidgets import QMainWindow
-from PyQt5.QtWidgets import QTableWidget
+from PyQt5.QtWidgets import QTableWidget, QComboBox
 from PyQt5.QtWidgets import QFormLayout, QGridLayout
 import logging
 from PyQt5.QtWidgets import QCheckBox
@@ -68,14 +68,21 @@ class create_insert_form(QDialog):
         logging.info("New insert form created")
 
     def setup_form(self):
+
         form_layout = QFormLayout()
+        # Combo boxes for gender and title.
+        title_combo_box = QComboBox()
+        title_combo_box.addItems(['Mr', 'Mrs', 'Ms'])
+        form_layout.addRow("Title:", title_combo_box)
+        gender_combo_box = QComboBox()
+        gender_combo_box.addItems(['Male', 'Female'])
+        form_layout.addRow("Gender:", gender_combo_box)
+        # Manual entry rows.
         form_layout.addRow("First Name:", QLineEdit())
         form_layout.addRow("Last Name:", QLineEdit())
         form_layout.addRow("Email:", QLineEdit())
         
         self.layout.addLayout(form_layout)
-
-
 
 def main():
     contact_book_app = QApplication(sys.argv)
