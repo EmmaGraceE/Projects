@@ -4,9 +4,10 @@ GUI created using PyQt and the SQL database managed by sqlite."""
 import sys
 from PyQt5.QtWidgets import QAction, QApplication, QDialog, QLineEdit, QVBoxLayout, QWidget, QToolBar
 from PyQt5.QtWidgets import QMainWindow
-
-from PyQt5.QtWidgets import QFormLayout
+from PyQt5.QtWidgets import QTableWidget
+from PyQt5.QtWidgets import QFormLayout, QGridLayout
 import logging
+from PyQt5.QtWidgets import QCheckBox
 
 logging.basicConfig(level=logging.INFO)
 
@@ -16,14 +17,17 @@ class contact_book_view(QMainWindow):
     def __init__(self, parent = None):
         super().__init__() 
         self.setWindowTitle("Contact Book")
-        self.general_layout = QVBoxLayout()
-        self.central_widget = QWidget(self)
-        self.setCentralWidget(self.central_widget)
-        # self.create_general_ui()
+        self.general_layout = QGridLayout()
+        self.create_general_ui()
         self.create_menu()
 
-    def create_general_ui():
-        pass
+    def create_general_ui(self):
+        self.table = QTableWidget()
+        self.general_layout.addWidget(self.table, 1, 0)
+        central_widget = QWidget()
+        central_widget.setLayout(self.general_layout)
+        self.setCentralWidget(central_widget)
+
 
 
     def create_menu(self):
@@ -38,6 +42,8 @@ class contact_book_view(QMainWindow):
 
         insert_action = self.menuBar().addAction("&Insert")
         insert_action.triggered.connect(self.open_insert_form)
+
+        
     
     def open_insert_form(self):
         """Creates the submenu form used for adding a new record."""
