@@ -73,7 +73,8 @@ class contact_book_view(QMainWindow):
         """Creates the su    # pyqt always returns false for sqlite execs that use
     # multiple statements.bmenu form used for adding a new record."""
         insert_form = create_insert_form(self)
-        
+        if insert_form.exec() == QDialog.accepted():
+            self.model.insert_record(insert_form.new_record)
 
 class create_insert_form(QDialog):
     """Insert form for the contact book."""
@@ -114,15 +115,15 @@ class create_insert_form(QDialog):
         self.layout.addWidget(self.insert_confirm_button)
 
     def confirm(self):
-        """Seperate loops needed for qline edit and combo boxes due to
-        differing types."""
-        self.record_data = []
-        for combo_entry in (self.gender_combo_box, self.title_combo_box):
-            print(combo_entry.currentText())
-        for line_entry in (self.first_name_entry, self.last_name_entry,
-        self.email_entry, self.phone_entry):
-            print(line_entry.text())
-
+        """Saves the insertion form details as a dictionary"""
+        self.new_record = {"gender": self.gender_combo_box.currentText(),
+        "sex":self.gender_combo_box.currentText(), 
+        "first_name": self.first_name_entry.text(),
+        "last_name": self.last_name_entry.text(), 
+        "email": self.email_entry.text(),
+        "phone_number": self.phone_entry.text()}
+        # Closes the dialog box.
+        super().accept()
 
 
 def main():
