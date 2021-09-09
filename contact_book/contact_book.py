@@ -8,6 +8,7 @@ from PyQt5.QtWidgets import QMainWindow
 from PyQt5.QtWidgets import QTableWidget, QComboBox
 from PyQt5.QtWidgets import QFormLayout, QGridLayout
 import logging
+from functools import partial
 from PyQt5.QtWidgets import QCheckBox
 from contact_book_model import ContactModel, create_connection
 
@@ -96,10 +97,11 @@ class create_insert_form(QDialog):
         self.first_name_entry = QLineEdit()
         self.last_name_entry = QLineEdit()
         self.email_entry = QLineEdit()
+
         self.phone_entry = QLineEdit()
         # Add entry boxes to form.
-        form_layout.addRow("&Title:", self.title_combo_box)
         form_layout.addRow("&Gender:", self.gender_combo_box)
+        form_layout.addRow("&Title:", self.title_combo_box)
         form_layout.addRow("&First Name:", self.first_name_entry)
         form_layout.addRow("&Last Name:", self.last_name_entry)
         form_layout.addRow("&Email:", self.email_entry)
@@ -108,12 +110,18 @@ class create_insert_form(QDialog):
         print(form_layout.children())
         # Enter button.
         self.insert_confirm_button = QPushButton("Confirm")
+        self.insert_confirm_button.clicked.connect(self.confirm)
         self.layout.addWidget(self.insert_confirm_button)
 
     def confirm(self):
+        """Seperate loops needed for qline edit and combo boxes due to
+        differing types."""
         self.record_data = []
-        
-
+        for combo_entry in (self.gender_combo_box, self.title_combo_box):
+            print(combo_entry.currentText())
+        for line_entry in (self.first_name_entry, self.last_name_entry,
+        self.email_entry, self.phone_entry):
+            print(line_entry.text())
 
 
 
