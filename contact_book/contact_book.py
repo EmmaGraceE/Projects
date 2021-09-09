@@ -3,7 +3,7 @@ GUI created using PyQt and the SQL database managed by sqlite."""
 
 import sys
 from PyQt5.QtCore import QLine
-from PyQt5.QtWidgets import QAbstractItemView, QAction, QApplication, QDialog, QHBoxLayout, QLabel, QLineEdit, QPushButton, QTableView, QVBoxLayout, QWidget, QToolBar
+from PyQt5.QtWidgets import QAbstractItemView, QAction, QApplication, QDialog, QHBoxLayout, QLabel, QLineEdit, QMessageBox, QPushButton, QTableView, QVBoxLayout, QWidget, QToolBar
 from PyQt5.QtWidgets import QMainWindow
 from PyQt5.QtWidgets import QTableWidget, QComboBox
 from PyQt5.QtWidgets import QFormLayout, QGridLayout
@@ -65,15 +65,24 @@ class contact_book_view(QMainWindow):
 
 
     def delete_record(self):
-        pass
-        logging.info("delete action clicked.")
+        """Gets the current row selected and then calls the delete_record function 
+        to remove that record from the model and sql database."""
+        row = self.table.currentIndex().row()
+        if row < 0:
+            return
+        message_box = QMessageBox.warning(self, "Delete contact?", "Are you sure\
+ you want to delete this contact?", QMessageBox.Yes | QMessageBox.No)
+        if message_box == QMessageBox.Yes:
+            self.model.delete_record(row)
+
+
 
     
     def open_insert_form(self):
         """Creates the su    # pyqt always returns false for sqlite execs that use
     # multiple statements.bmenu form used for adding a new record."""
         insert_form = create_insert_form(self)
-        if insert_form.exec() == QDialog.accepted():
+        if insert_form.exec() == QDialog.Accepted:
             self.model.insert_record(insert_form.new_record)
 
 class create_insert_form(QDialog):
@@ -117,7 +126,7 @@ class create_insert_form(QDialog):
     def confirm(self):
         """Saves the insertion form details as a dictionary"""
         self.new_record = {"gender": self.gender_combo_box.currentText(),
-        "sex":self.gender_combo_box.currentText(), 
+        "title":self.title_combo_box.currentText(), 
         "first_name": self.first_name_entry.text(),
         "last_name": self.last_name_entry.text(), 
         "email": self.email_entry.text(),
