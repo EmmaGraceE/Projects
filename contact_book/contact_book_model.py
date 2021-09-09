@@ -56,6 +56,19 @@ class ContactModel():
         self.model.submitAll()
         self.model.select()
 
+    def filter_model(self, column, lookup_value):
+        """Runs a select query on the contacts table, searching for 
+        WHERE column == lookup_value. Returns a qsqlquerymodel."""
+        if lookup_value == "":
+            self.model.setFilter("")
+            return
+
+        column = column.replace(" ", "_").lower()
+        lookup_query = f'{column} = "{lookup_value}"'
+        self.model.setFilter(lookup_query)
+        print(lookup_value)
+        self.model.select()
+
 
 def create_table():
     create_table_query = QSqlQuery()
