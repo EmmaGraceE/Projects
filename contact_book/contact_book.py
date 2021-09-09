@@ -2,7 +2,8 @@
 GUI created using PyQt and the SQL database managed by sqlite."""
 
 import sys
-from PyQt5.QtWidgets import QAbstractItemView, QAction, QApplication, QDialog, QHBoxLayout, QLabel, QLineEdit, QTableView, QVBoxLayout, QWidget, QToolBar
+from PyQt5.QtCore import QLine
+from PyQt5.QtWidgets import QAbstractItemView, QAction, QApplication, QDialog, QHBoxLayout, QLabel, QLineEdit, QPushButton, QTableView, QVBoxLayout, QWidget, QToolBar
 from PyQt5.QtWidgets import QMainWindow
 from PyQt5.QtWidgets import QTableWidget, QComboBox
 from PyQt5.QtWidgets import QFormLayout, QGridLayout
@@ -80,27 +81,40 @@ class create_insert_form(QDialog):
         self.setWindowTitle("Insert Form")
         self.layout = QVBoxLayout()
         self.setLayout(self.layout)
-        self.setup_form()
+        self.setup_form_ui()
         self.show()
         logging.info("New insert form created")
 
-    def setup_form(self):
-
+    def setup_form_ui(self):
+        # Form layout
         form_layout = QFormLayout()
-        # Combo boxes for gender and title.
-        title_combo_box = QComboBox()
-        title_combo_box.addItems(['Mr', 'Mrs', 'Ms'])
-        form_layout.addRow("Title:", title_combo_box)
-        gender_combo_box = QComboBox()
-        gender_combo_box.addItems(['Male', 'Female'])
-        form_layout.addRow("Gender:", gender_combo_box)
-        # Manual entry rows.
-        form_layout.addRow("First Name:", QLineEdit())
-        form_layout.addRow("Last Name:", QLineEdit())
-        form_layout.addRow("Email:", QLineEdit())
-        form_layout.addRow("Phone Number:", QLineEdit())
-        
+        # Create insert form entry boxes.
+        self.title_combo_box = QComboBox()
+        self.title_combo_box.addItems(['Mr', 'Mrs', 'Ms'])
+        self.gender_combo_box = QComboBox()
+        self.gender_combo_box.addItems(['Male', 'Female'])
+        self.first_name_entry = QLineEdit()
+        self.last_name_entry = QLineEdit()
+        self.email_entry = QLineEdit()
+        self.phone_entry = QLineEdit()
+        # Add entry boxes to form.
+        form_layout.addRow("&Title:", self.title_combo_box)
+        form_layout.addRow("&Gender:", self.gender_combo_box)
+        form_layout.addRow("&First Name:", self.first_name_entry)
+        form_layout.addRow("&Last Name:", self.last_name_entry)
+        form_layout.addRow("&Email:", self.email_entry)
+        form_layout.addRow("&Phone Number:", self.phone_entry)
         self.layout.addLayout(form_layout)
+        print(form_layout.children())
+        # Enter button.
+        self.insert_confirm_button = QPushButton("Confirm")
+        self.layout.addWidget(self.insert_confirm_button)
+
+    def confirm(self):
+        self.record_data = []
+        
+
+
 
 
 def main():
