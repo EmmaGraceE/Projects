@@ -1,6 +1,6 @@
 
 from PyQt5.QtCore import Qt
-from PyQt5.QtSql import QSqlDatabase, QSqlQuery, QSqlRecord, QSqlTableModel
+from PyQt5.QtSql import QSqlDatabase, QSqlQuery, QSqlTableModel
 import logging
 import sys
 

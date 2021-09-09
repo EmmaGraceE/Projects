@@ -2,14 +2,10 @@
 GUI created using PyQt and the SQL database managed by sqlite."""
 
 import sys
-from PyQt5.QtCore import QLine
-from PyQt5.QtWidgets import QAbstractItemView, QAction, QApplication, QDialog, QHBoxLayout, QLabel, QLineEdit, QMessageBox, QPushButton, QTableView, QVBoxLayout, QWidget, QToolBar
-from PyQt5.QtWidgets import QMainWindow
-from PyQt5.QtWidgets import QTableWidget, QComboBox
-from PyQt5.QtWidgets import QFormLayout, QGridLayout
+
+from PyQt5.QtWidgets import *
 import logging
-from functools import partial
-from PyQt5.QtWidgets import QCheckBox
+
 from contact_book_model import ContactModel, create_connection
 
 logging.basicConfig(level=logging.INFO)
