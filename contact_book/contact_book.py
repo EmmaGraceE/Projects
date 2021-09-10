@@ -1,15 +1,15 @@
 """Basic contact book implemented in Python. Follows an MVC pattern, with the
 GUI created using PyQt and the SQL database managed by sqlite."""
 
+from os import error, name
 import sys
-
+from email_validator import validate_email, EmailNotValidError
 from PyQt5.QtWidgets import *
 import logging
 
 from contact_book_model import ContactModel, create_connection
 
 logging.basicConfig(level=logging.INFO)
-
 
 class contact_book_view(QMainWindow):
     """The parent window for the contact book."""
@@ -55,20 +55,20 @@ class contact_book_view(QMainWindow):
 
         exit_action = QAction('Exit', self)
         exit_action.triggered.connect(self.close)
-        exit_action.setShortcut("CTRL+E")
         file_menu.addAction(exit_action)
         
         insert_action = self.menuBar().addAction('&Insert')
         insert_action.triggered.connect(self.open_insert_form)
 
         delete_action = self.menuBar().addAction('&Delete')
+        delete_action.setShortcut("DELETE")
         delete_action.triggered.connect(self.delete_record)
 
 
     def search_db(self):
         """Filters the database to only show values that match the search
         value."""
-
+        # Filters all rows that have given value in column.
         self.model.filter_model(self.search_combo.currentText(),
         self.searchbar.text())
 
@@ -130,11 +130,11 @@ class create_insert_form(QDialog):
         print(form_layout.children())
         # Enter button.
         self.insert_confirm_button = QPushButton("Confirm")
-        self.insert_confirm_button.clicked.connect(self.confirm)
+        self.insert_confirm_button.clicked.connect(self.run_validation_checks)
         self.layout.addWidget(self.insert_confirm_button)
 
 
-    def confirm(self):
+    def run_validation_checks(self):
         """Saves the insertion form details as a dictionary"""
         self.new_record = {"gender": self.gender_combo_box.currentText(),
         "title":self.title_combo_box.currentText(), 
@@ -142,10 +142,76 @@ class create_insert_form(QDialog):
         "last_name": self.last_name_entry.text(), 
         "email": self.email_entry.text(),
         "phone_number": self.phone_entry.text()}
-        # Closes the dialog box.
+        validation_tests = ValidationTests(self.new_record)
+
+        # Load error message and allow for redo.
+        error_text = (f"The following errors were found:\n\
+ {validation_tests.final_error_report}\n\n Do you want to change any details?")
+        message_box = QMessageBox.warning(self, "Errors found", error_text,
+         QMessageBox.Yes | QMessageBox.No)
+        if message_box == QMessageBox.Yes:
+            return
+        self.close_dialog()
+
+    
+    def close_dialog(self):
         super().accept()
 
+class ValidationTests():
+    """Contains a variety of validation tests for the input form."""
+    def __init__(self, testing_record):
+        """Initialise the ValidationTests class, expects the new record in the
+        form of a dictionary."""
+        self.errors_found = False
+        self.error_reports = []
+        self.name_test(testing_record["first_name"], "first name")
+        self.name_test(testing_record["last_name"], "last name")
+        self.email_test(testing_record["email"])
+        self.phone_number_test(testing_record["phone_number"])
+        if self.errors_found == True:
+            self.final_error_report = '\n'.join(self.error_reports)
+            
 
+    
+    def name_test(self, name, name_type):
+        """Name test for both first and last names."""
+        error_report = None
+        for char in name:
+            if char.isdigit():
+                error_report = f"{name_type} has numbers"
+                break
+        if len(name) <=3:
+            if error_report != None:
+                error_report += " and is under 3 characters."
+            else:
+                error_report = f"{name_type} is under 3 characters."
+        if error_report != None:
+            self.errors_found = True
+            self.error_reports.append(error_report)
+
+    def email_test(self, email_str):
+        try:
+            validate_email(email_str)
+        except EmailNotValidError:
+            self.errors_found = True
+            error_report = "The email address does not follow a valid format."
+            self.error_reports.append(error_report)
+
+    def phone_number_test(self, phone_num):
+        error_report = None
+        if len(phone_num) > 15:
+            self.errors_found = True
+            error_report = "phone number appears to be too long "
+        for char in(phone_num):
+            if not char.isdigit():
+                if error_report == None:
+                    error_report = "phone number contains non-numeric values."
+                    break
+                else:
+                    error_report += "and has non-numeric values."
+                    break
+        if error_report != None:
+            self.error_reports.append(error_report)
 
 def main():
     app = QApplication(sys.argv)
