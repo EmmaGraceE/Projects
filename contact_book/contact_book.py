@@ -155,6 +155,7 @@ class create_insert_form(QDialog):
 
     
     def close_dialog(self):
+        """Closes the new record with an "accept" return."""
         super().accept()
 
 class ValidationTests():
